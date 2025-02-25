@@ -25,7 +25,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => (
           className={`mb-8 flex ${isQuestion ? "justify-end" : "justify-start"}`}
         >
           <Card
-            className={`rounded-lg shadow-lg`}
+            className={`rounded-lg shadow-lg ${!isQuestion && "w-full"}`}
             classNames={{
               body: `${isQuestion ? "bg-default-50" : "bg-default-100"}`,
             }}
