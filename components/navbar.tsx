@@ -27,7 +27,7 @@ import {
 } from "@/components/icons";
 
 export const Navbar = () => {
-  const githubUrl = "https://github.com/doyeolKR";
+  const githubUrl = "https://github.com/doyeolKR/doyeol-RAG";
 
   const searchInput = (
     <Input
