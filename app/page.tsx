@@ -1,15 +1,24 @@
 "use client";
 
-import { Button, Textarea, Card, CardBody } from "@heroui/react";
 import { useState } from "react";
+import ChatHistory from "./components/ChatHistory";
+import InputArea from "./components/InputArea";
+import { ChatMessage } from "../types/chatMessage";
 
 export default function Home() {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [question, setQuestion] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]); // ChatMessage 타입 배열로 지정
 
   const handleAsk = async () => {
     if (!question.trim()) return alert("질문을 입력해주세요.");
+
+    setQuestion("");
+
+    // 질문을 chatHistory에 추가
+    const newQuestion: ChatMessage = { type: "question", text: question };
+    setChatHistory((prevHistory) => [...prevHistory, newQuestion]);
+
     setLoading(true);
 
     try {
@@ -24,11 +33,17 @@ export default function Home() {
       }
 
       const message = await res.json();
+      const newAnswer = message.result || "답변을 찾을 수 없습니다.";
 
-      setAnswer(message.result || "답변을 찾을 수 없습니다.");
+      const newAnswerMessage: ChatMessage = { type: "answer", text: newAnswer };
+      setChatHistory((prevHistory) => [...prevHistory, newAnswerMessage]);
     } catch (error) {
       console.error("에러 발생:", error);
-      setAnswer("오류가 발생했습니다. 다시 시도해주세요.");
+      const errorAnswer: ChatMessage = {
+        type: "answer",
+        text: "오류가 발생했습니다. 다시 시도해주세요.",
+      };
+      setChatHistory((prevHistory) => [...prevHistory, errorAnswer]);
     } finally {
       setLoading(false);
     }
@@ -41,46 +56,16 @@ export default function Home() {
     }
   };
 
-  const formatAnswer = (text: string) => {
-    return text.split("\n").map((str, index) => (
-      <span key={index}>
-        {str}
-        <br />
-      </span>
-    ));
-  };
-
   return (
     <div className="flex flex-col items-center justify-between min-h-screen p-4">
-      <div className="w-full max-w-2xl mb-4">
-        {answer && (
-          <Card className="rounded-lg shadow-lg">
-            <CardBody>
-              <p className="text-base">답변:</p>
-              <p className="mt-2 leading-8 text-sm">{formatAnswer(answer)}</p>
-            </CardBody>
-          </Card>
-        )}
-      </div>
-      <div className="w-full max-w-2xl sticky bottom-0">
-        <Textarea
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="개발자 유도열에 대해 질문해 보세요."
-          fullWidth
-          className="mb-2 text-black rounded-xl"
-        />
-        <Button
-          onPress={handleAsk}
-          disabled={loading}
-          color="primary"
-          className="w-full"
-          isLoading={loading}
-        >
-          질문하기
-        </Button>
-      </div>
+      <ChatHistory messages={chatHistory} />
+      <InputArea
+        question={question}
+        setQuestion={setQuestion}
+        handleAsk={handleAsk}
+        loading={loading}
+        handleKeyDown={handleKeyDown}
+      />
     </div>
   );
 }
