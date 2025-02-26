@@ -23,8 +23,11 @@ const InputArea = ({
         onKeyDown={handleKeyDown}
         placeholder="개발자 유도열에 대해 질문해 보세요."
         fullWidth
-        className="mb-2 text-black rounded-xl"
-        classNames={{ inputWrapper: "bg-default-200" }}
+        className="mb-2"
+        variant="faded"
+        classNames={{
+          inputWrapper: ["bg-default-200"],
+        }}
       />
       <TooltipArea />
     </div>
