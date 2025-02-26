@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Textarea } from "@heroui/react";
+import TooltipArea from "./TooltipArea";
 
 const InputArea = ({
   question,
@@ -15,15 +16,19 @@ const InputArea = ({
   handleKeyDown: (event: React.KeyboardEvent<any>) => void;
 }) => (
   <div className="w-full max-w-2xl sticky bottom-0">
-    <Textarea
-      value={question}
-      onChange={(e) => setQuestion(e.target.value)}
-      onKeyDown={handleKeyDown}
-      placeholder="개발자 유도열에 대해 질문해 보세요."
-      fullWidth
-      className="mb-2 text-black rounded-xl"
-      classNames={{ inputWrapper: "bg-default-100" }}
-    />
+    <div className="relative">
+      <Textarea
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="개발자 유도열에 대해 질문해 보세요."
+        fullWidth
+        className="mb-2 text-black rounded-xl"
+        classNames={{ inputWrapper: "bg-default-200" }}
+      />
+      <TooltipArea />
+    </div>
+
     <Button
       onPress={handleAsk}
       disabled={loading}
